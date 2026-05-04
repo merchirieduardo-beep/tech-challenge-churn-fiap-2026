@@ -1,0 +1,95 @@
+[project]
+name = "churn-prediction"
+version = "1.0.0"
+description = "Rede Neural (MLP) para Previsão de Churn em Telecomunicações - Pipeline End-to-End"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Tech Challenge - Grupo X"},
+]
+
+dependencies = [
+    "torch>=2.0.0",
+    "scikit-learn>=1.3.0",
+    "mlflow>=2.9.0",
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pandas>=2.1.0",
+    "numpy>=1.24.0",
+    "pydantic>=2.5.0",
+    "pandera>=0.17.0",
+    "structlog>=23.2.0",
+    "httpx>=0.25.0",
+    "joblib>=1.3.0",
+    "matplotlib>=3.8.0",
+    "seaborn>=0.13.0",
+    "imbalanced-learn>=0.11.0",
+    "email-validator>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.1.0",
+    "ipykernel>=6.26.0",
+    "jupyter>=1.0.0",
+    "nbformat>=5.9.0",
+]
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --tb=short"
+markers = [
+    "smoke: Smoke tests for basic functionality",
+    "schema: Schema validation tests",
+    "api: API endpoint tests",
+]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "S",   # flake8-bandit
+    "A",   # flake8-builtins
+    "C4",  # flake8-comprehensions
+    "DTZ", # flake8-datetimez
+    "T20", # flake8-print
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "ARG", # flake8-unused-arguments
+]
+ignore = [
+    "S101",  # assert used (ok in tests)
+    "S311",  # random not for crypto
+    "N803",  # X, y são convenção padrão em ML (sklearn, pytorch)
+    "N806",  # X_train, X_test são convenção padrão em ML
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "ARG001"]
+"notebooks/*" = ["T20", "E501"]
+"src/features/*" = ["ARG002"]  # sklearn API exige X, y em fit()
+"src/models/*" = ["ARG002"]
+"src/api/*" = ["ARG001"]  # FastAPI lifespan e middleware exigem params
